@@ -17,6 +17,7 @@ local cY = 0
 local tX = 0
 local tY = 0
 local unwantedItems = {["minecraft:cobblestone"] = true}
+local hasStartingChest = false
 
 -- Methods
 local function refreshItemCount()
@@ -60,6 +61,19 @@ local function checkItemsNotOk()
     return err
 end
 
+local function lookForStartingChest()
+    turtle.turnRight()
+    turtle.turnRight()
+    local success, item = turtle.inspect()
+    if success and string.match(item.name, "chest") then
+        hasStartingChest = true
+    else
+        hasStartingChest = false
+    end
+    turtle.turnLeft()
+    turtle.turnLeft()
+end
+
 
 
 local function dig3x3()
@@ -91,7 +105,7 @@ local function moveX(blocks)
         end
     else
         for i = blocks, 0 do
-            turtle.backward()
+            turtle.back()
         end
     end
     cX = cX + blocks
@@ -159,6 +173,25 @@ local function placeChestIfNeeded()
     return false
 end
 
+local function dumpToStartIfNeeded()
+    if turtle.getItemCount(bagEnd) > 0 then
+        local tempX = cX
+        moveX(cX * -1)
+        turtle.turnRight()
+        turtle.turnRight()
+        for slot = bagStart, bagEnd do
+            turtle.select(slot)
+            sleep(0.6)
+            turtle.drop()
+        end
+        turtle.turnRight()
+        turtle.turnRight()
+        moveX(tempX)
+        return true
+    end
+    return false
+end
+
 local function dropUnwantedItems()
     local item
     for slot = bagStart, bagEnd do
@@ -177,13 +210,17 @@ local function tunnelLoop()
     while cX ~= tX do
         fuelTurtleIfNeeded()
         dig3x3()
-        placeChestIfNeeded()
+        if hasStartingChest then
+            dumpToStartIfNeeded()
+        else
+            placeChestIfNeeded()
+        end
         placeTorchIfNeeded()
         dropUnwantedItems()
         turtle.select(bagStart - 1)
         moveX(1)
     end
-    print("We reached our target")
+    print("I reached my target. YEY.")
 end
 
 local function main()
@@ -194,10 +231,15 @@ local function main()
         refreshItemCount()
         sleep(5)
     end
-    print("Everything is fine.")
-    print("Tunnel lenght? ")
+    lookForStartingChest()
+    if hasStartingChest then
+        print("There is a chest behind me, I will use it.")
+    else
+        print("There is no chest behind me, I will place chests along the way.")
+    end
+    print("How long should I dig?")
     tX = tonumber(read())
-    print("Will dig for " .. tX .. " blocks")
+    print("Okay, I will dig for " .. tX .. " blocks")
     tunnelLoop()
 end
 
