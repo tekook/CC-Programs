@@ -180,6 +180,7 @@ local function tunnelLoop()
         dropUnwantedItems()
         moveX(1)
     end
+    print("We reached our target")
 end
 
 local function main()
