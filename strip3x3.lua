@@ -78,7 +78,15 @@ end
 
 local function dig3x3()
     turtle.dig()
-    turtle.forward()
+    local i = 0
+    while not turtle.forward() do
+        turtle.dig()
+        i = i + 1
+        if i > 20 then
+            print("cannot move forward!")
+            os.shutdown()
+        end
+    end
     turtle.turnLeft()
     turtle.dig()
     turtle.digUp()
@@ -145,6 +153,15 @@ local function placeTorchIfNeeded()
         turtle.select(slotTorches)
         turtle.up()
         turtle.turnLeft()
+        local i = 0
+        while turtle.inspect() do
+            if not turtle.dig() then break end
+            i = i + 1
+            if i > 20 then
+                print("Cannot break block to place torch")
+                return false
+            end
+        end
         turtle.place()
         turtle.down()
         turtle.turnRight()
@@ -231,15 +248,15 @@ local function main()
         refreshItemCount()
         sleep(5)
     end
+    print("How long should I dig?")
+    tX = tonumber(read())
+    print("Okay, I will dig for " .. tX .. " blocks")
     lookForStartingChest()
     if hasStartingChest then
         print("There is a chest behind me, I will use it.")
     else
         print("There is no chest behind me, I will place chests along the way.")
     end
-    print("How long should I dig?")
-    tX = tonumber(read())
-    print("Okay, I will dig for " .. tX .. " blocks")
     tunnelLoop()
 end
 
