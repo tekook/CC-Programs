@@ -178,7 +178,6 @@ end
 local function placeTorchIfNeeded()
     if cX ~= 0 and cX % distanceTorches == 0 then
         turtle.select(slotTorches)
-        turtle.up()
         turtle.turnLeft()
         local i = 0
         while turtle.inspect() do
@@ -190,7 +189,6 @@ local function placeTorchIfNeeded()
             end
         end
         turtle.place()
-        turtle.down()
         turtle.turnRight()
         return true
     end
@@ -316,6 +314,7 @@ local function main()
         print("There is no chest behind me, I will place chests along the way.")
     end
     tunnelLoop()
+    moveToStart()
 end
 
 main()
