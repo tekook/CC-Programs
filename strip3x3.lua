@@ -74,6 +74,23 @@ local function lookForStartingChest()
     turtle.turnLeft()
 end
 
+local function safeDig(shutdown)
+    turtle.dig()
+    local i = 0
+    while turtle.inspect() do
+        turtle.dig()
+        i = i + 1
+        if i > 20 then
+            if shutdown == true then
+                print("[safeDig] Shutdown!")
+                os.shutdown()
+            end
+            return false
+        end
+    end
+    return true
+end
+
 
 
 local function dig3x3()
@@ -88,7 +105,7 @@ local function dig3x3()
         end
     end
     turtle.turnLeft()
-    turtle.dig()
+    safeDig()
     turtle.digUp()
     turtle.up()
     turtle.dig()
@@ -97,7 +114,7 @@ local function dig3x3()
     turtle.dig()
     turtle.turnRight()
     turtle.turnRight()
-    turtle.dig()
+    safeDig()
     turtle.down()
     turtle.dig()
     turtle.down()
