@@ -13,7 +13,10 @@ local distanceTorches = 9
 local bagStart = 4
 local bagEnd = 16
 local cX = 0
+local cY = 0
 local tX = 0
+local tY = 0
+local unwantedItems = {["minecraft:cobblestone"] = true}
 
 -- Methods
 local function refreshItemCount()
@@ -79,20 +82,35 @@ local function dig3x3()
     turtle.dig()
     turtle.turnLeft()
 end
---[[]
-    moves x forward or backward
-]]
-local function move(x) {
-    if x > 0 then
-        for i = 0, x do
+
+
+local function moveX(blocks) {
+    if blocks > 0 then
+        for i = 0, blocks do
             turtle.forward()
         end
     else
-        for i = x, 0 do
+        for i = blocks, 0 do
             turtle.backward()
         end
     end
-    cX = cX + x
+    cX = cX + blocks
+}
+
+local function moveY(blocks) {
+    if blocks > 0 then
+        turtle.turnRight()
+        for i = 0, blocks do
+            turtle.forward()
+        end
+    else
+        turtle.turnLeft()
+        turtle.turnLeft()
+        for i = blocks, 0 do
+            turtle.backward()
+        end
+    end
+    cY = cY + blocks
 }
 
 local function fuelTurtleIfNeeded()
@@ -116,7 +134,9 @@ local function placeTorchIfNeeded()
         turtle.place()
         turtle.down()
         turtle.turnRight()
+        return true
     end
+    return false
 end
 
 local function placeChestIfNeeded()
@@ -130,9 +150,22 @@ local function placeChestIfNeeded()
                 sleep(0.6)
                 turtle.dropDown()
             end
+            return true
         else
             print("We are out of chests")
             os.shutdown()
+        end
+    end
+    return false
+end
+
+local function dropUnwantedItems()
+    local item
+    for slot = bagStart, bagEnd do
+        turtle.select(slot)
+        item = turtle.getItemDetail()
+        if unwantedItems[item.name] then
+            turtle.drop()
         end
     end
 end
@@ -144,7 +177,8 @@ local function tunnelLoop()
         dig3x3()
         placeChestIfNeeded()
         placeTorchIfNeeded()
-        move(1)
+        dropUnwantedItems()
+        moveX(1)
     end
 end
 
