@@ -9,7 +9,7 @@ local slotChests = 2
 local countChests = 0
 local slotTorches = 3
 local countTorches = 0
-local distanceTorches = 9
+local distanceTorches = 8
 local bagStart = 4
 local bagEnd = 16
 local cX = 0
@@ -84,7 +84,7 @@ local function dig3x3()
 end
 
 
-local function moveX(blocks) {
+local function moveX(blocks)
     if blocks > 0 then
         for i = 0, blocks do
             turtle.forward()
@@ -95,9 +95,9 @@ local function moveX(blocks) {
         end
     end
     cX = cX + blocks
-}
+end
 
-local function moveY(blocks) {
+local function moveY(blocks)
     if blocks > 0 then
         turtle.turnRight()
         for i = 0, blocks do
@@ -111,7 +111,7 @@ local function moveY(blocks) {
         end
     end
     cY = cY + blocks
-}
+end
 
 local function fuelTurtleIfNeeded()
     while turtle.getFuelLevel() < 120 do
@@ -127,7 +127,7 @@ local function fuelTurtleIfNeeded()
 end
 
 local function placeTorchIfNeeded()
-    if cX % distanceTorches then
+    if cX ~= 0 and cX % distanceTorches == 0 then
         turtle.select(slotTorches)
         turtle.up()
         turtle.turnLeft()
@@ -164,20 +164,23 @@ local function dropUnwantedItems()
     for slot = bagStart, bagEnd do
         turtle.select(slot)
         item = turtle.getItemDetail()
-        if unwantedItems[item.name] then
-            turtle.drop()
+        if item ~= nil then
+            if unwantedItems[item.name] then
+                turtle.drop()
+            end
         end
     end
 end
 
 
 local function tunnelLoop()
-    while not cX == tX do
+    while cX ~= tX do
         fuelTurtleIfNeeded()
         dig3x3()
         placeChestIfNeeded()
         placeTorchIfNeeded()
         dropUnwantedItems()
+        turtle.select(bagStart)
         moveX(1)
     end
     print("We reached our target")
@@ -186,7 +189,7 @@ end
 local function main()
     print("Checking items...")
     refreshItemCount()
-    while not checkItemsOk() do
+    while checkItemsNotOk() do
         print("Some items were not correct - will retry in 5 seconds")
         refreshItemCount()
         sleep(5)
