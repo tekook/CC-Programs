@@ -306,9 +306,9 @@ local function main()
     end
     print("How long should I dig? (X)")
     tX = tonumber(read())
-    print("How long should I dig? (Y)")
+    print("How wide should I dig? (Y)")
     tY = tonumber(read())
-    print("Okay, I will dig for " .. tX .. "x" .. tY .. " blocks")
+    print("Okay, I will dig for " .. tX .. "x" .. (tY+3) .. " blocks")
     lookForStartingChest()
     if hasStartingChest then
         print("There is a chest behind me, I will use it.")
