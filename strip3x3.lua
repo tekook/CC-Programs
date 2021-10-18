@@ -180,7 +180,7 @@ local function tunnelLoop()
         placeChestIfNeeded()
         placeTorchIfNeeded()
         dropUnwantedItems()
-        turtle.select(bagStart)
+        turtle.select(bagStart - 1)
         moveX(1)
     end
     print("We reached our target")
