@@ -122,33 +122,33 @@ local function dig3x3()
     turtle.turnLeft()
 end
 
-
-local function moveX(blocks)
+local function move(blocks)
     if blocks > 0 then
-        for i = 0, blocks do
-            turtle.forward()
+        for i = 0, (blocks-1) do
+            local failsave = 0
+            while not turtle.forward() do
+                turtle.dig()
+                failsave = failsave + 1
+                if failsave > 20 then
+                    print("cannot move forward - failsave")
+                    os.shutdown()
+                end
+            end
         end
     else
-        for i = blocks, 0 do
+        for i = (blocks+1), 0 do
             turtle.back()
         end
     end
+end
+
+local function moveX(blocks)
+    move(blocks)
     cX = cX + blocks
 end
 
 local function moveY(blocks)
-    if blocks > 0 then
-        turtle.turnRight()
-        for i = 0, blocks do
-            turtle.forward()
-        end
-    else
-        turtle.turnLeft()
-        turtle.turnLeft()
-        for i = blocks, 0 do
-            turtle.backward()
-        end
-    end
+    move(blocks)
     cY = cY + blocks
 end
 
@@ -210,6 +210,7 @@ end
 local function dumpToStartIfNeeded()
     if turtle.getItemCount(bagEnd) > 0 then
         local tempX = cX
+        print("moving " .. cX .. " back to chest")
         moveX(cX * -1)
         turtle.turnRight()
         turtle.turnRight()
@@ -220,6 +221,7 @@ local function dumpToStartIfNeeded()
         end
         turtle.turnRight()
         turtle.turnRight()
+        print("moving " .. tempX .. " back to point")
         moveX(tempX)
         return true
     end
@@ -244,6 +246,7 @@ local function tunnelLoop()
     while cX ~= tX do
         fuelTurtleIfNeeded()
         dig3x3()
+        cX = cX + 1
         if hasStartingChest then
             dumpToStartIfNeeded()
         else
@@ -252,7 +255,6 @@ local function tunnelLoop()
         placeTorchIfNeeded()
         dropUnwantedItems()
         turtle.select(bagStart - 1)
-        moveX(1)
     end
     print("I reached my target. YEY.")
 end
