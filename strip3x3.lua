@@ -142,13 +142,17 @@ local function move(blocks)
     end
 end
 
-local function moveX(blocks)
-    move(blocks)
+local function moveX(blocks, noMove)
+    if not noMove then
+        move(blocks)
+    end
     cX = cX + blocks
 end
 
-local function moveY(blocks)
-    move(blocks)
+local function moveY(blocks, noMove)
+    if not noMove then
+        move(blocks)
+    end
     cY = cY + blocks
 end
 
@@ -210,7 +214,6 @@ end
 local function dumpToStartIfNeeded()
     if turtle.getItemCount(bagEnd) > 0 then
         local tempX = cX
-        print("moving " .. cX .. " back to chest")
         moveX(cX * -1)
         turtle.turnRight()
         turtle.turnRight()
@@ -221,7 +224,6 @@ local function dumpToStartIfNeeded()
         end
         turtle.turnRight()
         turtle.turnRight()
-        print("moving " .. tempX .. " back to point")
         moveX(tempX)
         return true
     end
@@ -246,7 +248,7 @@ local function tunnelLoop()
     while cX ~= tX do
         fuelTurtleIfNeeded()
         dig3x3()
-        cX = cX + 1
+        moveX(1, true)
         if hasStartingChest then
             dumpToStartIfNeeded()
         else
