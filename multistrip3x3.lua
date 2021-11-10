@@ -16,7 +16,7 @@ local cX = 0
 local cY = 0
 local tX = 0
 local tY = 0
-local unwantedItems = {["minecraft:cobblestone"] = true}
+local unwantedItems = {["minecraft:cobblestone"] = true, ["quark:deepslate"] = true, ["byg:soapstone"] = true, ["quark:cobbled_deepslate"] = true, ["minecraft:dirt"] = true, ["minecraft:gravel"] = true, ["byg:rocky_stone"] = true}
 local hasStartingChest = false
 
 local function dumpCoords()
