@@ -16,7 +16,8 @@ local cX = 0
 local cY = 0
 local tX = 0
 local tY = 0
-local unwantedItems = {["minecraft:cobblestone"] = true, ["quark:deepslate"] = true, ["byg:soapstone"] = true, ["quark:cobbled_deepslate"] = true, ["minecraft:dirt"] = true, ["minecraft:gravel"] = true, ["byg:rocky_stone"] = true}
+local unwantedItems = {["quark:deepslate"] = true, ["byg:soapstone"] = true, ["quark:cobbled_deepslate"] = true, ["minecraft:gravel"] = true, ["byg:rocky_stone"] = true}
+local unwantedTags = {"forge:stone", "forge:grass", "forge:dirt", "forge:sand"}
 local hasStartingChest = false
 
 local function dumpCoords()
@@ -248,10 +249,18 @@ local function dropUnwantedItems()
     local item
     for slot = bagStart, bagEnd do
         turtle.select(slot)
-        item = turtle.getItemDetail()
+        item = turtle.getItemDetail(slot, true)
         if item ~= nil then
             if unwantedItems[item.name] then
                 turtle.drop()
+            end
+            for i, tag in ipairs(unwantedTags) do
+                print("Check slot#" .. slot .." against " .. tag)
+                if item.tags[tag]  then
+                    print("Drop item")
+                    turtle.drop()
+                    break
+                end
             end
         end
     end
