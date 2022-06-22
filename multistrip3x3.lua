@@ -17,7 +17,7 @@ local cY = 0
 local tX = 0
 local tY = 0
 local unwantedItems = {["quark:deepslate"] = true, ["byg:soapstone"] = true, ["quark:cobbled_deepslate"] = true, ["minecraft:gravel"] = true, ["byg:rocky_stone"] = true}
-local unwantedTags = {"forge:stone", "forge:grass", "forge:dirt", "forge:sand"}
+local unwantedTags = {"forge:cobblestone", "forge:stone", "forge:grass", "forge:dirt", "forge:sand"}
 local hasStartingChest = false
 
 local function dumpCoords()
